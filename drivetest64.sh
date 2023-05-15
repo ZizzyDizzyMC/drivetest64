@@ -18,14 +18,20 @@ echo 'shred -v -n 0 -z /dev/mapper/crypt-${1} && cmp -b /dev/zero /dev/mapper/cr
 echo 'echo "done"' >> shred-compare.sh
 chmod +x shred-compare.sh
 
-# Post the finish script using base64 decode then gunzip straight into a file.
-# I never learned how to just build a bash file that contained apostrophes in commands.
+# Define the content of the generated script
+script_content="#!/bin/bash
+for i in \$(cat drives.txt | awk '{print \$1}'); do
+    cryptsetup close crypt-\$i
+done
+echo \"Deleting shred-compare.sh\"
+rm shred-compare.sh
+ls /dev/mapper
+echo \"If any of your drives appear here you should ensure you remove them using cryptsetup close <name>\""
 
-echo "H4sIAAAAAAAAA2WOQU7DMBBF9z7FJ41Uumgj1iBWbDiGa0+wReyxZuyUCLh7GzW7bt//enq7p+Ec
-83C2GszIgoiY0T87W+ElzqSn+lPxB3v5xv63SMwV/cv//vAKz3CylKpUW4GbWOkOjn1c10yGXGB0
-HzRRjfkLGoT80XEqVuikoTOSHqCZFIOneUi2FJLN8TnC5gU8YuEmWxvWhxUEElr5zcVt8qCsbSNC
-iWdCDZTQdI14aH7LNtF7Z661g6XECwEAAA==" | base64 -d | gunzip > finish.sh
+# Generate the script
+echo "$script_content" > finish.sh
 chmod +x finish.sh
+echo "finish script generated successfully."
 
 
 # Run the shred-compare script
