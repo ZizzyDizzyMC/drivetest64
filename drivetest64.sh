@@ -14,8 +14,8 @@ for i in $(cat drives.txt | awk '{print $1}'); do yes "" | cryptsetup open --typ
 
 echo 'Building a script that gets ran next. Do not remove shred-compare.sh until the drive testing is done.'
 echo '#!/bin/bash' > shred-compare.sh
-echo 'shred -v -n 0 -z /dev/mapper/crypt-${1} && cmp -b /dev/zero /dev/mapper/crypt-${1}' > shred-compare.sh
-echo 'echo "done"' > shred-compare.sh
+echo 'shred -v -n 0 -z /dev/mapper/crypt-${1} && cmp -b /dev/zero /dev/mapper/crypt-${1}' >> shred-compare.sh
+echo 'echo "done"' >> shred-compare.sh
 chmod +x shred-compare.sh
 
 # Define the content of the generated script
